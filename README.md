@@ -3,7 +3,9 @@ This is a fork of the original repository. I am going to maintain my fork sepera
 
 Please support the original release.
 
-
+--------------------------
 Discord Tag:#0399
+
 Steam Username: Biggest Double Upload Network
+
 Other github: MoustacheSpy
