@@ -38,6 +38,8 @@ xgui.addSVModule( "kylebuildmode_load", function()
 	_Kyle_Buildmode["pvpdelay"] = 0
 	_Kyle_Buildmode["highlightonlywhenlooking"] = 0
 	_Kyle_Buildmode["showtextstatus"] = 1
+	_Kyle_Buildmode["spawnprotection"] = 5
+
 	
 	--Load saved settings
 	local saved = {}

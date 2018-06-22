@@ -1,3 +1,6 @@
+if SERVER then
+	util.AddNetworkString( "buildGUI" )
+end
 local function TryUnNoCollide(z)	
 	timer.Simple(0.1, function() 
 		--Exit if the prop stops existing
@@ -160,11 +163,25 @@ hook.Add("PlayerNoClip", "KylebuildmodeNoclip", function(y, z)
 		return z == false or y.buildmode
 	end
 end )
-
+local function _kyle_spawn(z)
+			_kyle_Buildmode_Disable(z)
+			z:SendLua("GAMEMODE:AddNotify(\"Spawnprotection disabled\",NOTIFY_GENERIC, 5)")
+		
+end
 hook.Add("PlayerSpawn", "kyleBuildmodePlayerSpawn",  function(z)
 	--z:GetNWBool("_kyle_died") makes sure that the player is spawning after a death and not the ulib respawn
-	if ((_Kyle_Buildmode["spawnwithbuildmode"]=="1" and not z:GetNWBool("_Kyle_pvpoverride")) or z:GetNWBool("_Kyle_Buildmode")) and z:GetNWBool("_kyle_died") then
-		_kyle_Buildmode_Enable(z)
+	if(!z:GetNWBool("_Kyle_Buildmode") and tonumber(_Kyle_Buildmode["spawnprotection"])>0)then
+	--having two buildmode variables seems redundant, however im too lazy to replace one with the other (if possible)
+	z.buildmode = true
+	z:SetNWBool("_Kyle_Buildmode", true)		
+	z:SendLua("GAMEMODE:AddNotify(\"Welcome back ;) ".._Kyle_Buildmode["spawnprotection"].." seconds of spawnprotection activated\",NOTIFY_GENERIC, 5)")
+
+		timer.Simple( _Kyle_Buildmode["spawnprotection"], function()
+			z:SetNWBool("_Kyle_Buildmode", false)
+			z.buildmode = false;
+		end)
+	else 
+		z:SendLua("GAMEMODE:AddNotify(\"Welcome back ;) Your status hasnt been changed\",NOTIFY_GENERIC, 5)")
 	end
 	z:SetNWBool("_kyle_died", false)
 end )
@@ -172,6 +189,12 @@ end )
 hook.Add("PlayerInitialSpawn", "kyleBuildmodePlayerInitilaSpawn", function (z) 
 	z:SetNWBool("_kyle_died", true)
 	z:SetNWBool("_Kyle_pvpoverride", false)
+	
+	if ((_Kyle_Buildmode["spawnwithbuildmode"]=="1" and not z:GetNWBool("_Kyle_pvpoverride")) or z:GetNWBool("_Kyle_Buildmode")) and z:GetNWBool("_kyle_died") then
+		_kyle_Buildmode_Enable(z)
+	end
+	net.Start( "buildGUI" )
+	net.Send( z )
 end )
 
 hook.Add("PostPlayerDeath", "kyleBuildmodePostPlayerDeath",  function(z)
